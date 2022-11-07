@@ -1,13 +1,42 @@
+// SECTION - Requirements
 const express = require('express');
 const app = express();
-const port = process.env.PORT || 3000;
+const cookieParser = require('cookie-parser');
 
-app.use(express.static('public'))
+// SECTION - Middleware
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/views/index.html')
+const myLogger = function (req, res, next) {
+    console.log('LOGGED');
+    next()
+}
+
+const requestTime = function (req, res, next) {
+    req.requestTime = Date.now();
+    next()
+}
+
+app.use(myLogger);
+app.use(requestTime);
+app.use(cookieParser());
+
+// ERROR HANLDER
+app.use((err, req, res, next) => {
+    res.status(400).send(err.message)
 })
 
-app.listen(port, () => {
-    console.log(`Application listening at ${port}`);
+// SECTION - Routes
+
+// app.get('/', (req, res) => {
+//     let responseText = 'Hello World!<br>';
+//     responseText += `<small>Requested at: ${req.requestTime}</small>`
+//     res.send(responseText)
+// })
+
+app.get('/', function (req, res) {
+    console.log('Cookies: ', req.cookies);
+    console.log('Signed Cookies: ', req.signedCookies);
 })
+
+// SECTION - Server Start
+
+app.listen(3000);
