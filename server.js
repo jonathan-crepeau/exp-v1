@@ -5,28 +5,19 @@ const path = require('path');
 
 // SECTION - Middleware
 
-app.use('/home', (req, res, next) => {
-    console.log("A new request received at " + Date.now());
-    next();  
- });
-
- app.use(express.static('public'))
-
 // SECTION - Routes
 app.get('/', (req, res) => {
     res.send('The root, bb!')
 })
 
-app.get('/home', (req, res) => {
-    res.sendFile(path.join(__dirname, '/views/home.html'))
-});
+app.get('/search', (req, res) => {
+    console.log(req.query);
+    res.send(`<h1>SearchTest</h1>`)
+})
 
-app.get('/about', (req, res) => {
-    res.send('About Page');
-});
-
-app.get('*', (req, res) => {
-    res.send('404! This is an invalid URL.')
+app.get('/echo/:word', (req, res) => {
+    console.log(req.params);
+    res.send(`<h1>ECHO: ${req.params.word}</h1>`)
 })
 
 app.get('/api/burgers', (req, res) => {
@@ -36,6 +27,10 @@ app.get('/api/burgers', (req, res) => {
 app.get('/api/tacos', (req, res) => {
     res.json(tacos);
 });
+
+app.get('*', (req, res) => {
+    res.send('404! This is an invalid URL.')
+})
 
 // SECTION - Server Start
 app.listen(4000);
